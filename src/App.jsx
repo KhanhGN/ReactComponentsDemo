@@ -1,24 +1,16 @@
 import './App.css';
 import { RotateCard } from './components/card';
+import { Routes, Route } from 'react-router-dom';
+import ComponentPage from './pages/component-page';
 
 function App() {
 	return (
-		<div
-			className='App'
-			style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
-		>
-			<RotateCard maxRotate={60} maxStep={10}>
-				<img
-					src='/assets/avatar.png'
-					alt='my image'
-					width={250}
-					height={400}
-					style={{
-						objectFit: 'cover',
-						objectPosition: 'center',
-					}}
-				/>
-			</RotateCard>
+		<div className='App'>
+			<Routes>
+				<Route path='/'>
+					<Route index element={<ComponentPage />}></Route>
+				</Route>
+			</Routes>
 		</div>
 	);
 }

@@ -2,11 +2,17 @@ import { useEffect, useState } from 'react';
 
 const RotateCard = ({
 	children,
-	maxRotate = 60,
+	width = 250,
+	height = 400,
+	maxRotate = 20,
 	maxStep = 10,
-	blur = 30,
-	color = '#FFFFFF88',
+	blur = 20,
+	color = '#ffffff44',
 	spread = 0,
+	style,
+	container = document,
+	borderColor = '#0000',
+	borderWeight = 0,
 }) => {
 	const [coord, setCoord] = useState({ x: 0, y: 0 });
 	const { x, y } = coord;
@@ -29,39 +35,51 @@ const RotateCard = ({
 	};
 
 	useEffect(() => {
-		document.addEventListener('mousemove', rotateHandler);
-		document.addEventListener('mouseleave', resetRotateHandler);
+		container.addEventListener('mousemove', rotateHandler);
+		container.addEventListener('mouseleave', resetRotateHandler);
 		return () => {
-			document.removeEventListener('mousemove', rotateHandler);
-			document.removeEventListener('mouseleave', resetRotateHandler);
+			container.removeEventListener('mousemove', rotateHandler);
+			container.removeEventListener('mouseleave', resetRotateHandler);
 		};
 	}, []);
 
 	return (
 		<div
 			style={{
-				background: '#222',
-				width: 250,
-				height: 400,
-				borderRadius: 16,
-				transform: `rotateX(${y}deg) rotateY(${x}deg)`,
-				overflow: 'hidden',
-				position: 'relative',
+				perspective: 1000,
+				width,
+				height,
+
+				transformStyle: 'preserve-3d',
 			}}
 		>
-			{children}
 			<div
 				style={{
-					boxShadow: `inset ${-x}px ${-y}px ${blur}px ${spread}px ${color}`,
-					zIndex: 100,
-					width: '100%',
-					height: '100%',
-					position: 'absolute',
-					top: 0,
-					left: 0,
+					width: 'inherit',
+					height: 'inherit',
 					borderRadius: 16,
+					overflow: 'hidden',
+					background: '#222',
+					transform: `rotateY(${-x}deg) rotateX(${y}deg)`,
+					position: 'relative',
+					boxShadow: `0px 0px 0px ${borderWeight}px ${borderColor}`,
+					...style,
 				}}
-			></div>
+			>
+				{children}
+				<div
+					style={{
+						boxShadow: `inset ${-x}px ${-y}px ${x || y ? blur : 0}px ${spread}px ${color}`,
+						zIndex: 100,
+						width: 'inherit',
+						height: 'inherit',
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						borderRadius: 16,
+					}}
+				></div>
+			</div>
 		</div>
 	);
 };
